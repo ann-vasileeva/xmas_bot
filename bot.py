@@ -2,7 +2,6 @@ import sqlite3 as sql
 import telebot
 import random
 from telebot import types
-bot = telebot.TeleBot(TOKEN)
 from string import ascii_lowercase
 import datetime as dt
 from dateutil.parser import parse
@@ -10,7 +9,16 @@ import dateutil
 import pytz
 import datetime 
 
+def get_noun(n):
+    n = n % 100
+    if (n>=5 and n<=20) or n % 5 == 0:
+        return "дней"
+    elif n % 10 == 1:
+        return 'день'
+    else: return 'дня'
+
 TOKEN = "5730824028:AAGDJ0lRfU1MeXdrjaBjgcBO6FByWV9SU2A"
+bot = telebot.TeleBot(TOKEN)
 words = ["merry", "rudolf", "present", "holiday", "reindeer", "sleigh", "candle", "snowman", "chimney", "candy", "cookie", "fireplace", "frosty", "gingerbread", "mittens", "sweater", "snowball", "snowflake", "wintertime", "spirit"]
 
 @bot.message_handler(commands=['launch'])
@@ -33,7 +41,7 @@ def unban_user(message):
     bot.send_message(message.chat.id,"С возвращением!")
     bot.send_sticker(message.chat.id,"CAACAgIAAxkBAAEGdB1jditBvHCwaiePNsHWd7OFL14mewACIwIAAoaH-QPIoUQz2Si7cisE")
     
- @bot.message_handler(commands=['count_admins'])
+@bot.message_handler(commands=['count_admins'])
 def count_members(message):
     members_cnt = len(bot.get_chat_administrators(message.chat.id))
     bot.send_message(message.chat.id, str(members_cnt) + " администраторы")
@@ -83,14 +91,7 @@ def callback_query(call):
         bot.send_message(call.from_user.id, call.inline_message_id)
     elif call.data == "False":
         bot.answer_callback_query(call.id, "Answer is No")
- 
-def get_noun(n):
-    n = n % 100
-    if (n>=5 and n<=20) or n % 5 == 0:
-        return "дней"
-    elif n % 10 == 1:
-        return 'день'
-    else: return 'дня'
+
 
 @bot.message_handler(commands=['days_till_ny'])
 def count_days(message):
@@ -101,4 +102,3 @@ def count_days(message):
     bot.send_sticker(message.chat.id,"CAACAgIAAxkBAAEGc91jdhC8_hiRWUZui-XhAv6Rqn3vVQACFwIAAoaH-QNP7Ea9Fb5BVysE")  
     
 bot.polling(none_stop=True, interval=0)   
-
